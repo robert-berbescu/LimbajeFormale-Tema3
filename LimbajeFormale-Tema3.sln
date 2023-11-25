@@ -5,6 +5,13 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LimbajeFormale-Tema3", "LimbajeFormale-Tema3.vcxproj", "{CC3CD2AD-B33D-4727-A707-D8D660B3E5D9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A07F62A7-EB41-4A6B-8131-E88EE74F450B}"
+	ProjectSection(SolutionItems) = preProject
+		reguli.output = reguli.output
+		reguli.tab.c = reguli.tab.c
+		reguli.tab.h = reguli.tab.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
