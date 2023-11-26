@@ -18,8 +18,17 @@
     <ClCompile Include="LimbajeFormale-Tema3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Regula.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="reguli.y" />
+    <Text Include="reguli.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Regula.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

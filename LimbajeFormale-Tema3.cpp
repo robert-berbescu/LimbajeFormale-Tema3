@@ -3,14 +3,73 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <stack>
+#include "Regula.h"
+#include <iomanip>
 
 using namespace std;
+
+vector<Regula> gramatica;
+stack<string> stiva;
+stack<string> intrare;
+int lungimeRandAfisat = 0;
+
+
+void procesareSirIntrare(string sirIntrare) {
+    istringstream iss(sirIntrare);
+    string token;
+
+    stack<string> intrareInvers;
+    while (iss >> token) {
+        intrareInvers.push(token);
+    }
+    //Inversare 
+    while (!intrareInvers.empty()) {
+        intrare.push(intrareInvers.top());
+        intrareInvers.pop();
+    }
+}
+
+void afisareLinie() {
+    cout << "----------------------------------------------------------------------------------------" << endl;
+}
+
+void afisareStivaSiIntrare() {
+
+    lungimeRandAfisat = 0;
+
+    //Inversare stiva
+    stack<string> temp = stiva;
+    stack<string> temp2;
+    while (!temp.empty()) {
+        temp2.push(temp.top());
+        temp.pop();
+    }
+
+    //Afisare stiva
+    while (!temp2.empty()) {
+        cout << left << temp2.top() << " ";
+        lungimeRandAfisat = lungimeRandAfisat + temp2.top().size() + 1;
+        temp2.pop();
+    }
+
+    cout << left << setw(35 - lungimeRandAfisat) << " ";
+    lungimeRandAfisat = 0;
+
+    //Afisare intrare
+    stack<string> temp6 = intrare;
+    while (!temp6.empty()) {
+        cout << temp6.top() << " ";
+        lungimeRandAfisat = lungimeRandAfisat + temp6.top().size() + 1;
+        temp6.pop();
+    }
+
+
+}
 
 int main()
 {
     //system("bison -d reguli.y --report=state");
-
-    
 
     ifstream f("reguli.output");
 
@@ -101,7 +160,7 @@ int main()
                             undeSarim = line.substr(32, 1);
                         }
                         else {
-                            undeSarim = line.substr(32, 2);
+                            undeSarim = line.substr(33, 2);
                         }
 					}
 					else if(rSauD=="r") //daca avem reduce
@@ -186,5 +245,87 @@ int main()
 
 
 
-        return 0;
+    // APD - TEMA 2
+    cout << endl << endl;
+    cout << "APD - TEMA 2" << endl;
+
+    ifstream g("reguli.txt");
+    string date;
+    while (g >> date) {
+        gramatica.push_back(Regula(date[0], date.substr(3)));
+    }
+
+    stiva.push("$");
+    stiva.push("0");
+
+    string sirIntrare = "a + a * a $";
+
+    string actiune;
+    int contor = 0;
+    bool gata = false;
+    procesareSirIntrare(sirIntrare);
+
+    //Afisare conditii initiale
+    cout << "STIVA" << setw(37) << "INTRARE" << setw(23) << "ACTIUNE" << endl;
+    afisareLinie();
+    afisareStivaSiIntrare();
+
+    while (gata == false) {
+        actiune = actiuni.at(intrare.top()).at(stoi(stiva.top()));
+
+        cout << right << setw(25 - lungimeRandAfisat) << actiune << " " << endl;
+
+        if (actiune[0] == 'd') {
+            //Luam din sir de inceput si punem in stiva
+            stiva.push(intrare.top());
+            intrare.pop();
+            stiva.push(actiune.substr(1));
+        }
+        else if (actiune[0] == 'r') {
+            string ceCautam = gramatica.at(actiune[1] - '0' - 1).getElementDerivat();
+            string sirGol = "";
+
+            //Stergem tot ce nu e bun
+            while (sirGol != ceCautam) {
+                if (string::npos == stiva.top().find_first_of("0123456789"))
+                {
+                    sirGol = stiva.top() + sirGol;
+                }
+                stiva.pop();
+            }
+
+            //Pun in stiva elementul inlocuit
+            stiva.push(gramatica.at(actiune[1] - '0' - 1).getElementStart());
+
+            //Ne uitam in tabela de salt
+            string varf = stiva.top();
+            stiva.pop();
+            string cifra = stiva.top();
+            stiva.push(varf);
+
+            int cifraDinTabelaDeSalt = stoi(salt.at(varf).at(stoi(cifra)));
+            stiva.push(to_string(cifraDinTabelaDeSalt));
+
+        }
+        else if (actiune == "acc") {
+            afisareLinie();
+            cout << "Sirul de intrare este corect" << endl;
+            gata = true;
+        }
+        else {
+            afisareLinie();
+            cout << "Sirul de intrare este incorect" << endl;
+            gata = true;
+        }
+
+        if (gata == 0) {
+            afisareStivaSiIntrare();
+        }
+    }
+    cout << endl;
+
+
+
+
+    return 0;
 }

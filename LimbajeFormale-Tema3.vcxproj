@@ -128,9 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="LimbajeFormale-Tema3.cpp" />
+    <ClCompile Include="Regula.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="reguli.txt" />
     <Text Include="reguli.y" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Regula.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
