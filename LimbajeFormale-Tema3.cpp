@@ -23,28 +23,6 @@ int main()
 
     unordered_map<string, vector<string>> actiuni;
     unordered_map<string, vector<string>> salt;
-    vector<string> terminals;
-    vector<string> neterminale;
-
-    terminals.push_back("(");
-    terminals.push_back(")");
-    terminals.push_back("*");
-    terminals.push_back("+");
-    terminals.push_back("-");
-    terminals.push_back("a");
-    terminals.push_back("$");
-
-    neterminale.push_back("E");
-    neterminale.push_back("T");
-    neterminale.push_back("F");
-
-    actiuni["("] = vector<string>();
-    actiuni[")"] = vector<string>();
-    actiuni["*"] = vector<string>();
-    actiuni["+"] = vector<string>();
-    actiuni["-"] = vector<string>();
-    actiuni["a"] = vector<string>();
-    actiuni["$"] = vector<string>();
 
     salt["E"] = vector<string>();
     salt["T"] = vector<string>();
@@ -58,6 +36,18 @@ int main()
             stateNou = false;
 
         }
+
+        //Cautam terminalele si le salvam
+        if (line.find("Terminals") != std::string::npos) {
+            getline(f, line); getline(f, line); getline(f, line);
+            actiuni["$"] = vector<string>();
+            while (line.find("error") == std::string::npos)
+            {
+                actiuni[line.substr(1, 1)] = vector<string>();
+                getline(f, line);
+            }
+        }
+
         if (line.find("state") != std::string::npos && line.find("go to") == std::string::npos) {
             if (line.length() == 7) {
                 nrState = stoi(line.substr(6, 7));
@@ -65,7 +55,7 @@ int main()
             else {
                 nrState = stoi(line.substr(6, 8));
             }
-            cout << "state nr: " << nrState << endl;
+            //cout << "state nr: " << nrState << endl;
 
 
             for (auto& entry : actiuni) {
@@ -80,12 +70,6 @@ int main()
             while (getline(f, line) && !(line.find("state") != std::string::npos && line.find("go to") == std::string::npos)) {
                 
                 undeSarim = "#";
-
-                //Cautam "Terminals"
-                if (line.find("Terminals") != std::string::npos) {
-                    //de facut
-                }
-
 
                 //Cautam linii care contin "shift" sau "reduce" sau "accept"
                 if (line.find("shift") != std::string::npos || line.find("reduce") != std::string::npos || line.find("$default  accept") != std::string::npos) {
@@ -171,7 +155,7 @@ int main()
 				}
 
             }
-            cout << endl;
+            //cout << endl;
             stateNou = true;
         }
     }
