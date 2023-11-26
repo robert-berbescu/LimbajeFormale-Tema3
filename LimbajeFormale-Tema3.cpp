@@ -6,6 +6,7 @@
 #include <stack>
 #include "Regula.h"
 #include <iomanip>
+#include <thread>
 
 using namespace std;
 
@@ -13,6 +14,8 @@ vector<Regula> gramatica;
 stack<string> stiva;
 stack<string> intrare;
 int lungimeRandAfisat = 0;
+
+ofstream r("reguli.y");
 
 
 void procesareSirIntrare(string sirIntrare) {
@@ -67,9 +70,74 @@ void afisareStivaSiIntrare() {
 
 }
 
+
+void generareReguliY(string pas) {
+
+    string elementCurent="";
+
+    if (pas == "inainte") {
+        r << "%{\n";
+        r << "#include <stdio.h>\n";
+        r << "#include <stdlib.h>\n";
+        r << "%}\n";
+        r << "\n";
+        r << "%%\n";
+        r << "\n";
+    }
+    else if (pas == "dupa") {
+        r << ";\n\n";
+        r << "\n%%\n";
+        r << "\n";
+        r << "int yyerror(char *s) {\n";
+        r << "    fprintf(stderr, \"%s\\n\", s);\n";
+        r << "    return 1;\n";
+        r << "}\n";
+        r << "\n";
+        r << "int main() {\n";
+        r << "    if (yyparse())\n";
+        r << "        fprintf(stderr, \"Successful parsing.\\n\");\n";
+        r << "    else\n";
+        r << "        fprintf(stderr, \"Error found.\\n\");\n";
+        r << "\n";
+        r << "    return 0;\n";
+        r << "}";
+
+    }
+    else if (pas == "reguli") {
+        for (Regula regula : gramatica) {
+            if (regula.getElementStart() != elementCurent) {
+                if (elementCurent != "")
+                    r << ";\n\n";
+                elementCurent = regula.getElementStart();
+                r << elementCurent << ": ";
+                r << "   " << regula.getElementDerivatY();
+                r << "\n";
+            }
+            else {
+                r << "    | " << regula.getElementDerivatY() << "\n";
+            }
+        }
+    }
+
+}
+
 int main()
 {
-    //system("bison -d reguli.y --report=state");
+
+    //Citim regulile
+    ifstream g("reguli.txt");
+    string date;
+    while (g >> date) {
+        gramatica.push_back(Regula(date[0], date.substr(3)));
+    }
+
+    //Generare reguli.y
+    generareReguliY("inainte");
+    generareReguliY("reguli");
+    generareReguliY("dupa");
+    r.close();
+
+    system("bison reguli.y --report=state");
 
     ifstream f("reguli.output");
 
@@ -249,11 +317,6 @@ int main()
     cout << endl << endl;
     cout << "APD - TEMA 2" << endl;
 
-    ifstream g("reguli.txt");
-    string date;
-    while (g >> date) {
-        gramatica.push_back(Regula(date[0], date.substr(3)));
-    }
 
     stiva.push("$");
     stiva.push("0");
