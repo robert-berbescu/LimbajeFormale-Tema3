@@ -222,8 +222,14 @@ int main()
                         if (line.length() == 33) {
                             undeSarim = line.substr(32, 1);
                         }
-                        else {
+                        else if(line.length() == 35) {
                             undeSarim = line.substr(33, 2);
+                        }
+                        else if(line.length() == 34 && line.find("$end") != std::string::npos) {
+                            undeSarim = line.substr(33, 1);
+                        }
+                        else {
+                            undeSarim = line.substr(32, 3);
                         }
 					}
 					else if(rSauD=="r") //daca avem reduce
@@ -242,7 +248,8 @@ int main()
                    
                     if (token == "$default") {
                         for (auto& entry : actiuni) {
-                            entry.second.at(nrState) = (rSauD + undeSarim);
+                            if (entry.second.at(nrState) == "#")
+                                entry.second.at(nrState) = (rSauD + undeSarim);
                         }
                     }
                     else if (undeSarim == "accept") {
@@ -318,7 +325,7 @@ int main()
     stiva.push("$");
     stiva.push("0");
 
-    string sirIntrare = "a + a * a $";
+    string sirIntrare = "( a + a ) * a $";
 
     string actiune;
     int contor = 0;
@@ -331,7 +338,15 @@ int main()
     afisareStivaSiIntrare();
 
     while (gata == false) {
-        actiune = actiuni.at(intrare.top()).at(stoi(stiva.top()));
+
+        if (intrare.empty())
+        {
+            if(actiuni.at("$").at(stoi(stiva.top()))=="acc")
+                actiune = "acc";
+        }
+        else {
+            actiune = actiuni.at(intrare.top()).at(stoi(stiva.top()));
+        }
 
         cout << right << setw(25 - lungimeRandAfisat) << actiune << " " << endl;
 
