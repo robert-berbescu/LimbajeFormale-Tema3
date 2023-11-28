@@ -317,7 +317,6 @@ int main()
     }
 
 
-
     // APD - TEMA 2
     cout << endl << endl;
     cout << "APD - TEMA 2" << endl<<endl;
@@ -325,7 +324,7 @@ int main()
     stiva.push("$");
     stiva.push("0");
 
-    string sirIntrare = "( a + a ) * a $";
+    string sirIntrare = "- ( a - a ) * a $";
 
     string actiune;
     int contor = 0;

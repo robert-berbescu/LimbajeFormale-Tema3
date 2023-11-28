@@ -1,5 +1,6 @@
 E->E+T
 E->T
+E->E-T
 T->T*F
 T->F
 F->(E)
